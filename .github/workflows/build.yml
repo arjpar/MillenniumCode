@@ -53,7 +53,7 @@ jobs:
     - name: Build Fonts
       run: |
         mkdir -p output
-        docker run -it --rm \
+        docker run --rm \
           -v ${{ github.workspace }}:/work \
           fontcc ttf::custom-font
       env:
