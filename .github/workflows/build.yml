@@ -55,7 +55,7 @@ jobs:
         mkdir -p output
         docker run --rm \
           -v ${{ github.workspace }}:/work \
-          fontcc ttf::custom-font
+          fontcc ttf::MillenniumCode
       env:
         VERSION_TAG: ${release}
 
