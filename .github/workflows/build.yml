@@ -1,66 +1,61 @@
 name: Build Iosevka
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "The Iosevka release to build"
+        required: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Install jq
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-    - name: Fetch Latest Iosevka Release
-      id: fetch-release
-      run: |
-        latest_release=$(curl -s https://api.github.com/repos/be5invis/Iosevka/releases/latest | jq -r .tag_name)
-        echo "release=${latest_release}" >> $GITHUB_ENV
+      - name: Clone Iosevka Source
+        run: |
+          git clone --depth=1 --branch ${{ github.event.inputs.release }} https://github.com/be5invis/Iosevka.git $HOME/Iosevka
 
-    - name: Clone Iosevka Source
-      run: |
-        git clone --depth=1 --branch ${release} https://github.com/be5invis/Iosevka.git $HOME/Iosevka
+      - name: Cache Docker Layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/docker-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
 
-    - name: Cache Docker Layers
-      uses: actions/cache@v3
-      with:
-        path: /tmp/docker-cache
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-docker-
+      - name: Build Docker Image
+        run: |
+          mkdir -p /tmp/docker-cache
+          docker build --cache-from /tmp/docker-cache -t fontcc $HOME/Iosevka/docker
 
-    - name: Build Docker Image
-      run: |
-        mkdir -p /tmp/docker-cache
-        docker build --cache-from /tmp/docker-cache -t fontcc $HOME/Iosevka/docker
+      - name: Cache Bun Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.bun
+          key: ${{ runner.os }}-bun-${{ hashFiles('private-build-plans.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
-    - name: Cache Bun Dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.bun
-        key: ${{ runner.os }}-bun-${{ hashFiles('private-build-plans.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-bun-
+      - name: Build Fonts
+        run: |
+          mkdir -p output
+          docker run --rm \
+            -v ${{ github.workspace }}:/work \
+            fontcc ttf::MillenniumCode
+        env:
+          VERSION_TAG: ${{ github.event.inputs.release }}
 
-    - name: Build Fonts
-      run: |
-        mkdir -p output
-        docker run --rm \
-          -v ${{ github.workspace }}:/work \
-          fontcc ttf::MillenniumCode
-      env:
-        VERSION_TAG: ${release}
-
-    - name: Upload Fonts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Iosevka-Fonts
-        path: dist/
+      - name: Upload Fonts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Iosevka-Fonts
+          path: dist/
