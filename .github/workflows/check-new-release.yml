@@ -1,0 +1,49 @@
+
+name: Check for New Iosevka Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Fetch Latest Iosevka Release
+      id: fetch-latest
+      run: |
+        latest_release=$(curl -s https://api.github.com/repos/be5invis/Iosevka/releases/latest | jq -r .tag_name)
+        echo "latest_release=$latest_release" >> $GITHUB_ENV
+
+    - name: Compare with Last Known Release
+      id: compare
+      run: |
+        echo "Last Known Release: ${{ secrets.LAST_KNOWN_RELEASE }}"
+        if [ "${{ env.latest_release }}" != "${{ secrets.LAST_KNOWN_RELEASE }}" ]; then
+          echo "New release detected: ${{ env.latest_release }}"
+          echo "new_release=true" >> $GITHUB_ENV
+        else
+          echo "No new release detected."
+          echo "new_release=false" >> $GITHUB_ENV
+
+    - name: Trigger Font Build Workflow
+      if: env.new_release == 'true'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'build.yml',
+            ref: 'main',
+            inputs: {
+              release: process.env.latest_release
+            }
+          })
+
+    - name: Update Last Known Release (Optional)
+      if: env.new_release == 'true'
+      run: |
+        echo "New release detected. Please update LAST_KNOWN_RELEASE secret with: ${{ env.latest_release }}"
