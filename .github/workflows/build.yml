@@ -56,9 +56,12 @@ jobs:
         env:
           VERSION_TAG: ${release}
 
+      - name: Adjust Permissions
+        run: |
+          sudo chmod -R 777 dist
+
       - name: Archive Fonts
         run: |
-          mkdir -p dist
           zip -r dist/Millennium_Code-Fonts.zip dist/
 
       - name: Create Release
