@@ -57,7 +57,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: process.env.latest_iosevka_release,
               name: `Millennium Code ${process.env.latest_iosevka_release}`,
-              body: `This release matches [Iosevka version ${process.env.latest_iosevka_release}](https://github.com/be5invis/Iosevka/releases/tag/${process.env.latest_iosevka_release}).`,
+              body: `This release matches [Iosevka release ${process.env.latest_iosevka_release}](https://github.com/be5invis/Iosevka/releases/tag/${process.env.latest_iosevka_release}).`,
               draft: false,
               prerelease: false
             })
