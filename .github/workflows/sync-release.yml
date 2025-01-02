@@ -31,6 +31,7 @@ jobs:
           else
             echo "No corresponding Millennium Code release found for Iosevka release ${{ env.latest_iosevka_release }}"
             echo "release_exists=false" >> $GITHUB_ENV
+          fi
 
       - name: Trigger Build Workflow
         if: env.release_exists == 'false'
@@ -49,15 +50,12 @@ jobs:
 
       - name: Create Millennium Code Release
         if: env.release_exists == 'false'
-        uses: actions/github-script@v6
+        uses: softprops/action-gh-release@v2
         with:
-          script: |
-            github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: process.env.latest_iosevka_release,
-              name: `Millennium Code ${process.env.latest_iosevka_release}`,
-              body: `This release matches [Iosevka release ${process.env.latest_iosevka_release}](https://github.com/be5invis/Iosevka/releases/tag/${process.env.latest_iosevka_release}).`,
-              draft: false,
-              prerelease: false
-            })
+          files: dist/*
+          tag_name: ${{ env.latest_iosevka_release }}
+          name: Millennium Code ${{ env.latest_iosevka_release }}
+          body: |
+            This release matches [Iosevka release ${{ env.latest_iosevka_release }}](https://github.com/be5invis/Iosevka/releases/tag/${{ env.latest_iosevka_release }}).
+          draft: false
+          prerelease: false
