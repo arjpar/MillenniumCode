@@ -65,7 +65,7 @@ jobs:
 
       - name: Archive Fonts
         run: |
-          zip -r dist/Millennium_Code-Fonts.zip dist/
+          zip -r dist/Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode
 
       - name: Create Release
         id: create_release
@@ -77,6 +77,6 @@ jobs:
             Millennium Code fonts built from the latest Iosevka release (${release}).
           draft: false
           prerelease: false
-          files: dist/Millennium_Code-Fonts.zip
+          files: dist/Millennium_Code-Fonts-${{ github.run_id }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
