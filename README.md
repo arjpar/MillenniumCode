@@ -1,5 +1,4 @@
 # Millennium Code
-<img width="455" alt="image" src="https://github.com/user-attachments/assets/8691997f-1880-4dcc-9b07-109ec06ffca0" />
-
+<img width="441" alt="image" src="https://github.com/user-attachments/assets/e43be591-b923-4105-a88d-ef86912e9389" />
 
 Free monospaced font with programming ligatures
