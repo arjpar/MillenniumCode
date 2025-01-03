@@ -3,6 +3,9 @@ name: Build Millennium Code
 on:
   workflow_dispatch: # Manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -69,7 +72,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ github.run_id }}" # Unique tag for the release
-          release_name: "Millennium Code Release ${{ github.run_id }}"
+          name: "Millennium Code Release ${{ github.run_id }}"
           body: |
             Millennium Code fonts built from the latest Iosevka release (${release}).
           draft: false
