@@ -65,7 +65,7 @@ jobs:
 
       - name: Archive Fonts
         run: |
-          zip -r dist/Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode
+          zip -r dist/Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode/*
 
       - name: Create Release
         id: create_release
@@ -74,7 +74,7 @@ jobs:
           tag_name: "v${{ github.run_id }}" # Unique tag for the release
           name: "Millennium Code Release ${{ github.run_id }}"
           body: |
-            Millennium Code fonts built from the latest Iosevka release (${release}).
+            Millennium Code fonts built from the latest Iosevka release (${{ env.release }}).
           draft: false
           prerelease: false
           files: dist/Millennium_Code-Fonts-${{ github.run_id }}.zip
