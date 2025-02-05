@@ -28,6 +28,7 @@ punctuation-dot = "square"
 asterisk = "hex-low"
 paren = "large-contour"
 number-sign = "slanted"
+ampersand = "upper-open"
 dollar = "interrupted"
 cent = "bar-interrupted"
 question = "corner"
@@ -50,9 +51,9 @@ z = "curly-serifless"
 ampersand = "flat-top"
 
 [buildPlans.MillenniumCode.weights.Regular]
-shape = 400
-menu = 400
-css = 400
+shape = 450
+menu = 450
+css = 450
 
 [buildPlans.MillenniumCode.weights.Bold]
 shape = 700
