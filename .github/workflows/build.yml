@@ -20,9 +20,10 @@ jobs:
           latest_release=$(curl -s https://api.github.com/repos/be5invis/Iosevka/releases/latest | jq -r .tag_name)
           echo "release=${latest_release}" >> $GITHUB_OUTPUT
 
-      - name: Clone Iosevka Source
-        run: |
-          git clone --depth=1 --single-branch --branch ${{ steps.fetch-release.outputs.release }} https://github.com/be5invis/Iosevka.git $HOME/Iosevka
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -31,41 +32,30 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx-bun-${{ hashFiles('docker/Dockerfile', 'docker/build.sh') }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-bun-
 
-      - name: Build Docker Image
+      - name: Build Docker Image with Bun
         run: |
           DOCKER_BUILDKIT=1 docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache \
             --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
             --load \
             -t fontcc \
-            $HOME/Iosevka/docker
+            docker/
 
       - name: Move Docker Cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Cache Node Modules
-        uses: actions/cache@v4
-        with:
-          path: $HOME/Iosevka/node_modules
-          key: ${{ runner.os }}-node-${{ steps.fetch-release.outputs.release }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ steps.fetch-release.outputs.release }}-
-            ${{ runner.os }}-node-
-
-      - name: Build Fonts
+      - name: Build Fonts with Bun
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/work \
-            -v $HOME/Iosevka/node_modules:/Iosevka/node_modules \
+            -e VERSION_TAG=${{ steps.fetch-release.outputs.release }} \
             fontcc ttf::MillenniumCode
-        env:
-          VERSION_TAG: ${{ steps.fetch-release.outputs.release }}
 
       - name: Adjust Permissions
         run: |

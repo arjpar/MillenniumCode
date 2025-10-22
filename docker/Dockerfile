@@ -1,18 +1,11 @@
-# Base image with dependencies
-FROM debian:bullseye
+FROM oven/bun:1-slim
 
-# Install required packages
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    make \
-    python3 \
-    g++ \
-    && apt-get clean
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        apt-transport-https ca-certificates curl ttfautohint bash \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Bun
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:$PATH"
-
-# Set up font builder
+COPY build.sh /
+RUN chmod +x /build.sh
 WORKDIR /work
+ENTRYPOINT ["bash", "/build.sh"]
