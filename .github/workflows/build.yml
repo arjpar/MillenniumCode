@@ -20,7 +20,7 @@ jobs:
 
   build:
     needs: prepare
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         variant: [
@@ -77,7 +77,6 @@ jobs:
       - name: Build Font Variant
         run: |
           docker run --rm \
-            --cpus="16" \
             -v ${{ github.workspace }}:/work \
             -v $HOME/Iosevka/node_modules:/Iosevka/node_modules \
             fontcc ttf::MillenniumCode
