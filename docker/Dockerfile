@@ -1,4 +1,4 @@
-FROM oven/bun:1-slim
+FROM oven/bun:latest
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
