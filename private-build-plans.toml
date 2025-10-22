@@ -35,6 +35,7 @@ question = "corner"
 lig-plus-chain = "with-notch"
 lig-double-arrow-bar = "with-notch"
 lig-single-arrow-bar = "with-notch"
+brace = "curly-flat-boundary"
 
 [buildPlans.MillenniumCode.variants.italic]
 f = "flat-hook-tailed"

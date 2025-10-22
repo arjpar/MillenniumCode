@@ -7,76 +7,118 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
-
+    outputs:
+      release: ${{ steps.fetch-release.outputs.release }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
       - name: Fetch Latest Iosevka Release
         id: fetch-release
         run: |
           latest_release=$(curl -s https://api.github.com/repos/be5invis/Iosevka/releases/latest | jq -r .tag_name)
-          echo "release=${latest_release}" >> $GITHUB_ENV
+          echo "release=${latest_release}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest-16-cores
+    strategy:
+      matrix:
+        variant: [
+          { weight: "Regular", slope: "Upright" },
+          { weight: "Regular", slope: "Italic" },
+          { weight: "Bold", slope: "Upright" },
+          { weight: "Bold", slope: "Italic" }
+        ]
+      fail-fast: false
+      max-parallel: 4
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Clone Iosevka Source
         run: |
-          git clone --depth=1 --branch ${release} https://github.com/be5invis/Iosevka.git $HOME/Iosevka
+          git clone --depth=1 --single-branch --branch ${{ needs.prepare.outputs.release }} https://github.com/be5invis/Iosevka.git $HOME/Iosevka
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: /tmp/docker-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile') }}
           restore-keys: |
-            ${{ runner.os }}-docker-
+            ${{ runner.os }}-buildx-
 
       - name: Build Docker Image
         run: |
-          mkdir -p /tmp/docker-cache
-          docker build --cache-from /tmp/docker-cache -t fontcc $HOME/Iosevka/docker
+          DOCKER_BUILDKIT=1 docker buildx build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
+            --load \
+            -t fontcc \
+            $HOME/Iosevka/docker
 
-      - name: Cache Bun Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('private-build-plans.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Build Fonts
+      - name: Move Docker Cache
         run: |
-          mkdir -p output
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Cache Node Modules
+        uses: actions/cache@v4
+        with:
+          path: $HOME/Iosevka/node_modules
+          key: ${{ runner.os }}-node-${{ needs.prepare.outputs.release }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ needs.prepare.outputs.release }}-
+            ${{ runner.os }}-node-
+
+      - name: Build Font Variant
+        run: |
           docker run --rm \
+            --cpus="16" \
             -v ${{ github.workspace }}:/work \
+            -v $HOME/Iosevka/node_modules:/Iosevka/node_modules \
             fontcc ttf::MillenniumCode
         env:
-          VERSION_TAG: ${release}
+          VERSION_TAG: ${{ needs.prepare.outputs.release }}
 
       - name: Adjust Permissions
         run: |
-          sudo chmod -R 777 dist
+          sudo chmod -R 755 dist
 
-      - name: Archive Fonts
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fonts-${{ matrix.variant.weight }}-${{ matrix.variant.slope }}
+          path: dist/MillenniumCode/TTF/*
+          retention-days: 1
+
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: fonts
+
+      - name: Organize and Archive Fonts
         run: |
-          zip -r dist/Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode/*
+          mkdir -p dist/MillenniumCode
+          find fonts -name "*.ttf" -exec cp {} dist/MillenniumCode/ \;
+          zip -r Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode/*
 
       - name: Create Release
-        id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ github.run_id }}" # Unique tag for the release
+          tag_name: "v${{ github.run_id }}"
           name: "Millennium Code Release ${{ github.run_id }}"
           body: |
-            Millennium Code fonts built from the latest Iosevka release (${{ env.release }}).
+            Millennium Code fonts built from the latest Iosevka release (${{ needs.prepare.outputs.release }}).
           draft: false
           prerelease: false
-          files: dist/Millennium_Code-Fonts-${{ github.run_id }}.zip
+          files: Millennium_Code-Fonts-${{ github.run_id }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
