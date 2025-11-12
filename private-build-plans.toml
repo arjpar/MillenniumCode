@@ -27,6 +27,7 @@ y = "straight-turn-serifless"
 punctuation-dot = "square"
 asterisk = "hex-low"
 paren = "large-contour"
+brace = "curly-flat-boundary"
 number-sign = "slanted"
 ampersand = "upper-open"
 dollar = "interrupted"
@@ -35,7 +36,6 @@ question = "corner"
 lig-plus-chain = "with-notch"
 lig-double-arrow-bar = "with-notch"
 lig-single-arrow-bar = "with-notch"
-brace = "curly-flat-boundary"
 
 [buildPlans.MillenniumCode.variants.italic]
 f = "flat-hook-tailed"
@@ -62,7 +62,7 @@ menu = 700
 css = 700
 
 [buildPlans.MillenniumCode.widths.Normal]
-shape = 600
+shape = 500
 menu = 5
 css = "normal"
 
