@@ -1,0 +1,79 @@
+[buildPlans.MillenniumCodeTerm]
+family = "Millennium Code Term"
+spacing = "term"
+serifs = "sans"
+noCvSs = false
+exportGlyphNames = true
+
+[buildPlans.MillenniumCodeTerm.variants.design]
+one = "base"
+three = "flat-top-serifless"
+four = "closed-serifless"
+five = "upright-flat-serifless"
+six = "open-contour"
+seven = "straight-serifless-crossbar"
+eight = "two-circles"
+nine = "open-contour"
+zero = "tall-slashed-cutout"
+capital-g = "toothless-corner-serifless-hooked"
+capital-j = "flat-hook-serifed"
+f = "flat-hook-serifless"
+g = "single-storey-flat-hook-serifless"
+j = "flat-hook-serifed"
+l = "serifed-flat-tailed"
+r = "hookless-serifless"
+t = "flat-hook"
+y = "straight-turn-serifless"
+punctuation-dot = "square"
+asterisk = "hex-low"
+paren = "flat-arc"
+brace = "curly-flat-boundary"
+number-sign = "slanted"
+ampersand = "upper-open"
+dollar = "interrupted"
+cent = "bar-interrupted"
+question = "corner"
+lig-plus-chain = "with-notch"
+lig-double-arrow-bar = "with-notch"
+lig-single-arrow-bar = "with-notch"
+
+[buildPlans.MillenniumCodeTerm.variants.italic]
+f = "flat-hook-tailed"
+h = "tailed-serifless"
+i = "serifed-semi-tailed"
+l = "serifed-semi-tailed"
+m = "tailed-serifless"
+n = "tailed-serifless"
+q = "tailed-serifless"
+v = "curly-serifless"
+x = "semi-chancery-straight-serifless"
+y = "cursive-flat-hook-serifless"
+z = "curly-serifless"
+ampersand = "flat-top"
+
+[buildPlans.MillenniumCodeTerm.weights.Regular]
+shape = 450
+menu = 450
+css = 450
+
+[buildPlans.MillenniumCodeTerm.weights.Bold]
+shape = 700
+menu = 700
+css = 700
+
+[buildPlans.MillenniumCodeTerm.widths.Normal]
+shape = 500
+menu = 5
+css = "normal"
+
+[buildPlans.MillenniumCodeTerm.slopes.Upright]
+angle = 0
+shape = "upright"
+menu = "upright"
+css = "normal"
+
+[buildPlans.MillenniumCodeTerm.slopes.Italic]
+angle = 9.4
+shape = "italic"
+menu = "italic"
+css = "italic"

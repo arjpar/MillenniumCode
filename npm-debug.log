@@ -1,0 +1,96 @@
+0 info it worked if it ends with ok
+1 verbose cli [
+1 verbose cli   '/opt/homebrew/Cellar/node/25.1.0_1/bin/node',
+1 verbose cli   '/Users/a/.bun/bin/npm',
+1 verbose cli   'view',
+1 verbose cli   '@anthropic-ai/claude-code@latest',
+1 verbose cli   'version',
+1 verbose cli   '--prefer-online'
+1 verbose cli ]
+2 info using npm@2.15.12
+3 info using node@v25.1.0
+4 verbose config Skipping project config: /Users/a/.npmrc. (matches userconfig)
+5 silly mapToRegistry name @anthropic-ai/claude-code
+6 silly mapToRegistry scope (from package name) @anthropic-ai
+7 verbose mapToRegistry no registry URL found in name for scope @anthropic-ai
+8 silly mapToRegistry using default registry
+9 silly mapToRegistry registry https://registry.npmjs.org/
+10 silly mapToRegistry data Result {
+10 silly mapToRegistry   raw: '@anthropic-ai/claude-code',
+10 silly mapToRegistry   scope: '@anthropic-ai',
+10 silly mapToRegistry   name: '@anthropic-ai/claude-code',
+10 silly mapToRegistry   rawSpec: '',
+10 silly mapToRegistry   spec: 'latest',
+10 silly mapToRegistry   type: 'tag'
+10 silly mapToRegistry }
+11 silly mapToRegistry uri https://registry.npmjs.org/@anthropic-ai%2fclaude-code
+12 verbose request uri https://registry.npmjs.org/@anthropic-ai%2fclaude-code
+13 verbose request no auth needed
+14 info attempt registry request try #1 at 1:58:33 PM
+15 verbose request id 2abdf26057c97c92
+16 verbose etag W/"5c19143007d96112a9448f705760e8e7"
+17 verbose lastModified Tue, 11 Nov 2025 00:18:15 GMT
+18 http request GET https://registry.npmjs.org/@anthropic-ai%2fclaude-code
+19 http 304 https://registry.npmjs.org/@anthropic-ai%2fclaude-code
+20 verbose headers {
+20 verbose headers   date: 'Thu, 13 Nov 2025 18:58:34 GMT',
+20 verbose headers   connection: 'keep-alive',
+20 verbose headers   server: 'cloudflare',
+20 verbose headers   'cf-ray': '99e080533ddf4350-EWR',
+20 verbose headers   'cf-cache-status': 'HIT',
+20 verbose headers   'access-control-allow-origin': '*',
+20 verbose headers   age: '206',
+20 verbose headers   'cache-control': 'public, max-age=300',
+20 verbose headers   etag: '"5c19143007d96112a9448f705760e8e7"',
+20 verbose headers   'last-modified': 'Tue, 11 Nov 2025 00:18:15 GMT',
+20 verbose headers   vary: 'Accept-Encoding',
+20 verbose headers   'set-cookie': [
+20 verbose headers     '_cfuvid=aJz6B3Vc_0Tmw8d3WxDdm.dVD7FMgK_XGWzLcQm0wqU-1763060314194-0.0.1.1-604800000; path=/; domain=.npmjs.org; HttpOnly; Secure; SameSite=None'
+20 verbose headers   ]
+20 verbose headers }
+21 silly get cb [
+21 silly get   304,
+21 silly get   {
+21 silly get     date: 'Thu, 13 Nov 2025 18:58:34 GMT',
+21 silly get     connection: 'keep-alive',
+21 silly get     server: 'cloudflare',
+21 silly get     'cf-ray': '99e080533ddf4350-EWR',
+21 silly get     'cf-cache-status': 'HIT',
+21 silly get     'access-control-allow-origin': '*',
+21 silly get     age: '206',
+21 silly get     'cache-control': 'public, max-age=300',
+21 silly get     etag: '"5c19143007d96112a9448f705760e8e7"',
+21 silly get     'last-modified': 'Tue, 11 Nov 2025 00:18:15 GMT',
+21 silly get     vary: 'Accept-Encoding',
+21 silly get     'set-cookie': [
+21 silly get       '_cfuvid=aJz6B3Vc_0Tmw8d3WxDdm.dVD7FMgK_XGWzLcQm0wqU-1763060314194-0.0.1.1-604800000; path=/; domain=.npmjs.org; HttpOnly; Secure; SameSite=None'
+21 silly get     ]
+21 silly get   }
+21 silly get ]
+22 verbose etag https://registry.npmjs.org/@anthropic-ai%2fclaude-code from cache
+23 verbose get saving @anthropic-ai/claude-code to /Users/a/.npm/registry.npmjs.org/_40anthropic-ai_252fclaude-code/.cache.json
+24 verbose correctMkdir /Users/a/.npm correctMkdir not in flight; initializing
+25 verbose exit [ 0, true ]
+26 verbose stack Error: write EPIPE
+26 verbose stack     at afterWriteDispatched (node:internal/stream_base_commons:159:15)
+26 verbose stack     at writeGeneric (node:internal/stream_base_commons:150:3)
+26 verbose stack     at Socket._writeGeneric (node:net:966:11)
+26 verbose stack     at Socket._write (node:net:978:8)
+26 verbose stack     at writeOrBuffer (node:internal/streams/writable:570:12)
+26 verbose stack     at _write (node:internal/streams/writable:499:10)
+26 verbose stack     at Writable.write (node:internal/streams/writable:508:10)
+26 verbose stack     at printData (/Users/a/node_modules/npm/lib/view.js:262:18)
+26 verbose stack     at /Users/a/node_modules/npm/lib/view.js:145:12
+26 verbose stack     at saved (/Users/a/node_modules/npm/lib/cache/caching-client.js:173:7)
+27 verbose cwd /Users/a/ProgrammingProjects/MillenniumCode/MillenniumCode
+28 error Darwin 25.1.0
+29 error argv "/opt/homebrew/Cellar/node/25.1.0_1/bin/node" "/Users/a/.bun/bin/npm" "view" "@anthropic-ai/claude-code@latest" "version" "--prefer-online"
+30 error node v25.1.0
+31 error npm  v2.15.12
+32 error code EPIPE
+33 error errno -32
+34 error syscall write
+35 error write EPIPE
+36 error If you need help, you may report this error at:
+36 error     <https://github.com/npm/npm/issues>
+37 verbose exit [ -32, true ]

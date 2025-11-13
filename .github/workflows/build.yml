@@ -9,6 +9,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant: [normal, term]
 
     steps:
       - name: Checkout Repository
@@ -22,6 +25,10 @@ jobs:
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
+
+      - name: Copy Build Plan for ${{ matrix.variant }}
+        run: |
+          cp private-build-plans.${{ matrix.variant }}.toml private-build-plans.toml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -48,20 +55,43 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Build Fonts with Bun
+      - name: Build Fonts with Bun (${{ matrix.variant }})
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/work \
             -e VERSION_TAG=${{ steps.fetch-release.outputs.release }} \
-            fontcc ttf::MillenniumCode
+            fontcc ${{ matrix.variant == 'term' && 'ttf::MillenniumCodeTerm' || 'ttf::MillenniumCode' }}
 
       - name: Adjust Permissions
         run: |
           sudo chmod -R 755 dist
 
-      - name: Archive Fonts
+      - name: Archive Fonts (${{ matrix.variant }})
         run: |
-          zip -r Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode/TTF/*
+          if [ "${{ matrix.variant }}" == "term" ]; then
+            zip -r Millennium_Code_Term-Fonts-${{ github.run_id }}.zip dist/MillenniumCodeTerm/TTF/*
+          else
+            zip -r Millennium_Code-Fonts-${{ github.run_id }}.zip dist/MillenniumCode/TTF/*
+          fi
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: millennium-code-${{ matrix.variant }}
+          path: Millennium_Code*.zip
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display Structure
+        run: ls -R artifacts/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -69,9 +99,9 @@ jobs:
           tag_name: "v${{ github.run_id }}"
           name: "Millennium Code Release ${{ github.run_id }}"
           body: |
-            Millennium Code fonts built from the latest Iosevka release (${{ steps.fetch-release.outputs.release }}).
+            Millennium Code fonts (normal and terminal spacing variants) built from the latest Iosevka release.
           draft: false
           prerelease: false
-          files: Millennium_Code-Fonts-${{ github.run_id }}.zip
+          files: artifacts/*/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
