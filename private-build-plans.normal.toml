@@ -62,7 +62,7 @@ menu = 700
 css = 700
 
 [buildPlans.MillenniumCode.widths.Normal]
-shape = 500
+shape = 600
 menu = 5
 css = "normal"
 
