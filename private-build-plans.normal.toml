@@ -26,9 +26,8 @@ t = "flat-hook"
 y = "straight-turn-serifless"
 punctuation-dot = "square"
 asterisk = "hex-low"
-paren = "flat-arc"
+paren = "large-contour"
 number-sign = "slanted"
-ampersand = "upper-open"
 dollar = "interrupted"
 cent = "bar-interrupted"
 question = "corner"
@@ -49,6 +48,7 @@ x = "semi-chancery-straight-serifless"
 y = "cursive-flat-hook-serifless"
 z = "curly-serifless"
 ampersand = "flat-top"
+
 
 [buildPlans.MillenniumCode.weights.Regular]
 shape = 450
